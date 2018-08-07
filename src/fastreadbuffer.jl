@@ -66,6 +66,25 @@ function Base.unsafe_read(buf::FastReadBuffer, ptr::Ptr{UInt8}, nb::UInt)
     nothing
 end
 
+function Base.readbytes!(buf::FastReadBuffer, b::Array{UInt8}, nb=length(b))
+    # from https://github.com/JuliaLang/julia/blob/9d85f7fd738febabab46275678e3987ac477dbfc/base/iobuffer.jl#L429
+    nr = min(nb, Compat.bytesavailable(buf))
+    if length(b) < nr
+        resize!(b, nr)
+    end
+    if nr > length(b) || nr < 0
+        throw(BoundsError())
+    end
+    @static if isdefined(Base, :GC)
+        GC.@preserve b begin
+            unsafe_read(buf, pointer(b), UInt(nr))
+        end
+    else
+        unsafe_read(buf, pointer(b), UInt(nr))
+    end
+    nr
+end
+
 function Base.seek(buf::FastReadBuffer, n::Integer)
     buf.position[] = max(min(n, length(buf.data)), 0)
     buf

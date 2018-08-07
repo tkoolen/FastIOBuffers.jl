@@ -28,6 +28,12 @@ suite["read"]["Float64"] = @benchmarkable read(buf, Float64) evals = N setup = b
     end
     buf = FastReadBuffer(take!(writebuf))
 end
+suite["read"]["String"] = @benchmarkable (seekstart(buf); read(buf, String)) setup = begin
+    rng = MersenneTwister(1)
+    writebuf = IOBuffer()
+    write(writebuf, randstring(rng, N))
+    buf = FastReadBuffer(take!(writebuf))
+end
 
 overhead = BenchmarkTools.estimate_overhead()
 results = run(suite, verbose=true, overhead=overhead, gctrial=false)

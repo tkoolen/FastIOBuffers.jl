@@ -70,6 +70,7 @@ end
                 write($writebuf, x)
                 write($writebuf, y)
                 setdata!($buf, take!($writebuf))
+                @test Compat.bytesavailable($buf) == 2 * Core.sizeof($T)
                 xback = read($buf, $T)
                 allocs = @allocated read($buf, $T)
                 @test xback === x
@@ -82,8 +83,11 @@ end
                 seekend($buf)
                 @test_throws EOFError read($buf, UInt8)
                 @test position($buf) == 2 * Core.sizeof($T)
-                seek($buf, Core.sizeof($T))
+                seekstart($buf)
+                skip($buf, Core.sizeof($T))
+                @test Compat.bytesavailable($buf) == Core.sizeof($T)
                 @test read($buf, $T) == y
+                @test eof($buf)
             end
         end
     end
@@ -98,6 +102,8 @@ end
     write(writebuf, str)
     setdata!(buf, take!(writebuf))
     @test read(buf, String) == str * str
+    seekstart(buf)
+    @test String(readavailable(buf)) == str * str
 end
 
 include(joinpath(@__DIR__, "..", "perf", "runbenchmarks.jl"))
