@@ -5,7 +5,10 @@
 
 FastIOBuffers aims to provide faster alternatives to `Base.IOBuffer`, which as of time of writing allocates memory even when e.g. a `Float64` is written to or read from it.
 
-Currently, this package only provides `FastWriteBuffer`, which solves the allocation problem for the write use case. On 0.6.4:
+
+### FastWriteBuffer
+
+`FastWriteBuffer` solves the allocation problem for the write use case. On 0.6.4, using `IOBuffer`:
 
 ```julia
 using Compat, BenchmarkTools
@@ -29,3 +32,22 @@ end
 ```
 
 results in `10.526 ns (0 allocations: 0 bytes)`
+
+### FastReadBuffer
+
+Similarly, `FastReadBuffer` can be used in place of `IOBuffer` for reading. On 0.6.4, using `IOBuffer`:
+
+```julia
+using BenchmarkTools
+N = 1000
+@btime read(buf, Float64) evals = N setup = begin
+    rng = MersenneTwister(1)
+    writebuf = IOBuffer()
+    map(1 : N) do _
+        write(writebuf, rand(rng, Float64))
+    end
+    buf = IOBuffer(take!(writebuf))
+end
+```
+
+results in `13.620 ns (1 allocation: 16 bytes)`, while replacing `IOBuffer` with `FastReadBuffer` results in `2.017 ns (0 allocations: 0 bytes)`.
