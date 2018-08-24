@@ -92,7 +92,7 @@ end
 
 Base.seekend(buf::FastReadBuffer) = buf.position[] = length(buf.data)
 Base.position(buf::FastReadBuffer) = buf.position[]
-Base.readavailable(buf::FastReadBuffer) = read(buf, nb_available(buf))
+Base.readavailable(buf::FastReadBuffer) = read(buf, bytesavailable(buf))
 Base.isopen(buf::FastReadBuffer) = true
 Base.close(buf::FastReadBuffer) = throw(MethodError("Unsupported operation"))
 Base.skip(buf::FastReadBuffer, n::Integer) = seek(buf, buf.position[] + n)
