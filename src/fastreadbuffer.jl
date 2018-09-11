@@ -7,12 +7,12 @@ FastReadBuffer(data::Vector{UInt8}) = FastReadBuffer(data, Ref(0))
 FastReadBuffer() = FastReadBuffer(Vector{UInt8}())
 
 """
-    setdata!(buf::FastReadBuffer, data::Vector{UInt8))
+    setdata!(buf::FastReadBuffer, data::AbstractVector{UInt8))
 
 Copy the data in `data` to the internal data buffer in `buf`
 and reset the position to the beginning.
 """
-function setdata!(buf::FastReadBuffer, data::Vector{UInt8})
+function setdata!(buf::FastReadBuffer, data::AbstractVector{UInt8})
     n = length(data)
     resize!(buf.data, n)
     unsafe_copyto!(buf.data, 1, data, 1, n)
