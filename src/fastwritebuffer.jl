@@ -1,9 +1,9 @@
-struct FastWriteBuffer <: IO
-    data::Vector{UInt8}
+struct FastWriteBuffer{V<:AbstractVector{UInt8}} <: IO
+    data::V
     position::Base.RefValue{Int}
 end
 
-FastWriteBuffer(data::Vector{UInt8}) = FastWriteBuffer(data, Ref(0))
+FastWriteBuffer(data::AbstractVector{UInt8}) = FastWriteBuffer(data, Ref(0))
 FastWriteBuffer() = FastWriteBuffer(Vector{UInt8}())
 
 @inline function ensureroom!(buf::FastWriteBuffer, n::Integer)

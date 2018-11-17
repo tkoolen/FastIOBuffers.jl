@@ -1,9 +1,9 @@
-struct FastReadBuffer <: IO
-    data::Vector{UInt8}
+struct FastReadBuffer{V<:AbstractVector{UInt8}} <: IO
+    data::V
     position::Base.RefValue{Int} # last read position
 end
 
-FastReadBuffer(data::Vector{UInt8}) = FastReadBuffer(data, Ref(0))
+FastReadBuffer(data::AbstractVector{UInt8}) = FastReadBuffer(data, Ref(0))
 FastReadBuffer() = FastReadBuffer(Vector{UInt8}())
 
 """
