@@ -8,38 +8,38 @@ FastIOBuffers aims to provide faster alternatives to `Base.IOBuffer`, which as o
 
 ### FastWriteBuffer
 
-`FastWriteBuffer` solves the allocation problem for the write use case. On 0.6.4, using `IOBuffer`:
+`FastWriteBuffer` solves the allocation problem for the write use case. On 1.1.0, using `IOBuffer`:
 
 ```julia
 using Compat, BenchmarkTools
-N = 1000
+const N = 1000
 @btime write(buf, x) evals = N setup = begin
     x = rand(Float64)
-    buf = IOBuffer(Vector{UInt8}(undef, N * Core.sizeof(x)), false, true)
+    buf = IOBuffer(Vector{UInt8}(undef, N * Core.sizeof(x)), read=false, write=true)
 end
 ```
 
-results in `39.338 ns (2 allocations: 32 bytes)`, while
+results in `15.582 ns (1 allocation: 16 bytes)`, while
 
 ```julia
 using Compat, BenchmarkTools
 using FastIOBuffers
-N = 1000
+const N = 1000
 @btime write(buf, x) evals = N setup = begin
     x = rand(Float64)
     buf = FastWriteBuffer(Vector{UInt8}(undef, N * Core.sizeof(x)))
 end
 ```
 
-results in `10.526 ns (0 allocations: 0 bytes)`
+results in `10.759 ns (0 allocations: 0 bytes)`
 
 ### FastReadBuffer
 
-Similarly, `FastReadBuffer` can be used in place of `IOBuffer` for reading. On 0.6.4, using `IOBuffer`:
+Similarly, `FastReadBuffer` can be used in place of `IOBuffer` for reading. On 1.1.0, using `IOBuffer`:
 
 ```julia
-using BenchmarkTools
-N = 1000
+using BenchmarkTools, Random
+const N = 1000
 @btime read(buf, Float64) evals = N setup = begin
     rng = MersenneTwister(1)
     writebuf = IOBuffer()
@@ -50,4 +50,4 @@ N = 1000
 end
 ```
 
-results in `13.620 ns (1 allocation: 16 bytes)`, while replacing `IOBuffer` with `FastReadBuffer` results in `2.017 ns (0 allocations: 0 bytes)`.
+results in `3.368 ns (0 allocations: 0 bytes)`, while replacing `IOBuffer` with `FastReadBuffer` results in `1.344 ns (0 allocations: 0 bytes)`.
