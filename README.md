@@ -11,7 +11,7 @@ FastIOBuffers aims to provide faster alternatives to `Base.IOBuffer`, which as o
 `FastWriteBuffer` solves the allocation problem for the write use case. On 1.1.0, using `IOBuffer`:
 
 ```julia
-using Compat, BenchmarkTools
+using BenchmarkTools
 const N = 1000
 @btime write(buf, x) evals = N setup = begin
     x = rand(Float64)
@@ -22,7 +22,7 @@ end
 results in `15.582 ns (1 allocation: 16 bytes)`, while
 
 ```julia
-using Compat, BenchmarkTools
+using BenchmarkTools
 using FastIOBuffers
 const N = 1000
 @btime write(buf, x) evals = N setup = begin
