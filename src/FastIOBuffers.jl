@@ -7,8 +7,6 @@ export
 export
     setdata!
 
-using Compat
-
 include("fastwritebuffer.jl")
 include("fastreadbuffer.jl")
 

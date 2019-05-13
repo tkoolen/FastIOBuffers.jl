@@ -68,7 +68,7 @@ end
 
 function Base.readbytes!(buf::FastReadBuffer, b::Array{UInt8}, nb=length(b))
     # from https://github.com/JuliaLang/julia/blob/9d85f7fd738febabab46275678e3987ac477dbfc/base/iobuffer.jl#L429
-    nr = min(nb, Compat.bytesavailable(buf))
+    nr = min(nb, bytesavailable(buf))
     if length(b) < nr
         resize!(b, nr)
     end
@@ -96,7 +96,7 @@ Base.readavailable(buf::FastReadBuffer) = read(buf, bytesavailable(buf))
 Base.isopen(buf::FastReadBuffer) = true
 Base.close(buf::FastReadBuffer) = throw(MethodError("Unsupported operation"))
 Base.skip(buf::FastReadBuffer, n::Integer) = seek(buf, buf.position[] + n)
-Compat.bytesavailable(buf::FastReadBuffer) = length(buf.data) - buf.position[]
+Base.bytesavailable(buf::FastReadBuffer) = length(buf.data) - buf.position[]
 Base.eof(buf::FastReadBuffer) = buf.position[] >= length(buf.data)
 Base.iswritable(buf::FastReadBuffer) = false
 Base.isreadable(buf::FastReadBuffer) = true

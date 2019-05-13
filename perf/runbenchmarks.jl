@@ -1,7 +1,6 @@
 module FastIOBuffersBenchmarks
 
-using Compat
-using Compat.Random
+using Random
 using BenchmarkTools
 using FastIOBuffers
 
