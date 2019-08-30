@@ -31,7 +31,7 @@ end
 
 @inline function Base.read(
             buf::FastReadBuffer,
-            ::Type{T}) where T<:Union{Int16,UInt16,Int32,UInt32,Int64,UInt64,Int128,UInt128,Float16,Float32,Float64}
+            T::Union{map(t->Type{t}, Any[Int16,UInt16,Int32,UInt32,Int64,UInt64,Int128,UInt128,Float16,Float32,Float64])...})
     n = Core.sizeof(T)
     pos = buf.position[]
     nextpos = pos + n
