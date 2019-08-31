@@ -1,6 +1,6 @@
 name = "FastIOBuffers"
 uuid = "6ccb8d0d-f5f8-5ae0-a392-f5aa62729a81"
-version = "0.3.0"
+version = "0.3.1"
 
 [compat]
 julia = "≥ 1.0.0"
